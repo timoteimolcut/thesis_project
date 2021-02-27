@@ -159,7 +159,7 @@ GLint projLoc;
 GLuint texture;
 
 
-void initObjects(GLfloat *meshVertices, GLuint *meshIndices) {
+void initObjects(vector<float> meshVertices, vector<int> meshIndices) {
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// mesh points
 
@@ -168,11 +168,11 @@ void initObjects(GLfloat *meshVertices, GLuint *meshIndices) {
 
 	glGenBuffers(1, &meshVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, meshVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(meshVertices), meshVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, meshVertices.size() * sizeof(float), meshVertices.data(), GL_STATIC_DRAW);
 
 	glGenBuffers(1, &meshEBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(meshIndices), meshIndices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshIndices.size() * sizeof(int), meshIndices.data(), GL_STATIC_DRAW);
 
 	//vertex position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
@@ -525,8 +525,8 @@ int main(void) {
 	//aici va fi 3d reconstruction, si dupa procesare, urmeaza OpenGL
 
 
-	/* GLfloat* meshVertices = (GLfloat*)calloc(18, sizeof(GLfloat));
-	 GLuint* meshIndices = (GLuint*)calloc(3, sizeof(GLuint));
+	/*GLfloat* meshVertices = (GLfloat*)calloc(18, sizeof(GLfloat));
+	GLuint* meshIndices = (GLuint*)calloc(3, sizeof(GLuint));
 
 	if (meshVertices == NULL || meshIndices == NULL) {
 		return -100;
@@ -544,7 +544,7 @@ int main(void) {
 	meshIndices[2] = 2;
 	*/
 
-	GLfloat meshVertices[] = {
+	/*GLfloat meshVertices[] = {
 		-0.5, -0.5, -0.5, 1.0, 0.0, 0.0,
 		-0.5, 0.5, -0.5, 1.0, 0.0, 0.0,
 		0.5, 0.5, -0.5, 1.0, 0.0, 0.0,
@@ -554,7 +554,6 @@ int main(void) {
 		0.5, 0.5, 0.5, 1.0, 0.0, 0.0,
 		0.5, -0.5, 0.5, 1.0, 0.0, 0.0
 	};
-
 
 	GLuint meshIndices[] = {
 		0, 1, 2,
@@ -569,34 +568,47 @@ int main(void) {
 		1, 6, 2,
 		4, 5, 6,
 		4, 6, 7
-	};
+	};*/
+
+	// de aici am luat idea: https://stackoverflow.com/questions/14234361/opengl-using-vbo-with-stdvector
+	vector<float> meshVertices;
+	vector<int> meshIndices;
+
+	// push back 3D coords and RGB color
+
+	meshVertices.push_back(1);
+	meshVertices.push_back(1);
+	meshVertices.push_back(-1);
+	meshVertices.push_back(1);
+	meshVertices.push_back(0);
+	meshVertices.push_back(0);
+
+	meshVertices.push_back(1);
+	meshVertices.push_back(-1);
+	meshVertices.push_back(1);
+	meshVertices.push_back(1);
+	meshVertices.push_back(0);
+	meshVertices.push_back(0);
+
+	meshVertices.push_back(0);
+	meshVertices.push_back(0);
+	meshVertices.push_back(0);
+	meshVertices.push_back(1);
+	meshVertices.push_back(0);
+	meshVertices.push_back(0);
+
+
+	meshIndices.push_back(0);
+	meshIndices.push_back(1);
+	meshIndices.push_back(2);
 
 	//OpenGL thread - main thread
 	initOpenGLWindow();
 
 	// init VAO, VBO etc, folosind un array de puncte 3D
-	//initObjects(meshVertices, meshIndices);
+	initObjects(meshVertices, meshIndices);
 	
-	glGenVertexArrays(1, &meshVAO);
-	glBindVertexArray(meshVAO);
-
-	glGenBuffers(1, &meshVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, meshVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(meshVertices), meshVertices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &meshEBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(meshIndices), meshIndices, GL_STATIC_DRAW);
-
-	//vertex position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	//vertex colour attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glBindVertexArray(0);
+	
 
 
 
